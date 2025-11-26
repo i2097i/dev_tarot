@@ -1,32 +1,43 @@
-# File Driver to create a device /dev/one like the /dev/zero
+# /dev/tarot
+## a virtual file driver to create a device /dev/tarot
 
-### QuickStart
+### quick start
 
-When installed, running:
+when installed, running:
 ```bash
-cat /dev/one | hexdump -v
+cat /dev/tarot
+```
+or
+```bash
+sudo head -c 4 /dev/tarot
 ```
 
-Prints:
+prints stream of random tarot cards:
 ```text
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
++T1+C1+S1+P1+W1
+```
+
+card formatting:
+```regex
+/[+-](T(2[0-1]|1[0-9]|[0-9])|[CSPW](1[0-4]|[1-9])){1}(?=[\s+-])/
 ```
 
 
-### Install
+### install
 
-Download file and generate keys
+download file and generate keys
 
 ```bash
-git clone https://github.com/tinmarino/dev_one.git DevOne && cd DevOne  # 1/ Download
-sudo make key     # 2 Generate key for signing
-sudo reboot now   # 3 Reboot and enable Mok
-  # 1. A blue screen (MOK manager) will appear
-  # 2. Choose "Enroll MOK"
-  # 3. Choose "Continue"
-  # 4. Choose "Yes" (when asked "Enroll the key")
-  # 5. Enter the password you gave at make sign
-  # 6. Choose "Reboot" (again)
+git clone https://github.com/i2097i/dev_tarot.git dev_tarot # 1 download
+cd dev_tarot
+sudo make key     # 2 generate key for signing
+sudo reboot now   # 3 reboot and enable MOK
+  # 1. a blue screen (MOK manager) will appear
+  # 2. choose "Enroll MOK"
+  # 3. choose "Continue"
+  # 4. choose "Yes" (when asked "Enroll the key")
+  # 5. enter the password you gave at make sign
+  # 6. choose "Reboot" (again)
 ```
 
 Install module in system
@@ -35,43 +46,49 @@ Install module in system
 sudo make full
 ```
 
-In case you want a fast development life cycle, here is how to load module once
+in case you want a fast development life cycle, here is how to load module once
 
 ```bash
-make build        # 4 Compile
-sudo make sign    # 5 Sign driver module to permit MOK enforcement (security)
-sudo make user_load    # 6 Load
-sudo make user_create  # 7 Create /dev/one
-make test         # 8 Test if all is ok
+make build        # 4 compile
+sudo make sign    # 5 sign driver module to permit MOK enforcement (security)
+sudo make user_load    # 6 load
+sudo make user_create  # 7 create /dev/tarot
+make test         # 8 test if all is ok
 ```
 
-As usual, to clean your work, run `sudo make clean`
+as usual, to clean your work, run `sudo make clean`
 
 
-### Util
+### util
 
 ```bash
-# Installed modules, see #7
-lsmod  # List modules
-sudo modprobe one  # Load one driver => creates /dev/one
-sudo depmod  # Re-create the module dependency list
-sudo modprobe -r one  # Load one driver => removes /dev/one
+# installed modules, see #7
+lsmod  # list modules
+sudo modprobe tarot  # load tarot driver => creates /dev/tarot
+sudo depmod  # re-create the module dependency list
+sudo modprobe -r tarot  # load tarot driver => removes /dev/tarot
 
-# Keys
-sudo mokutil --list-new  # List key that will be added at boot
-sudo mokutil --reset  # Delete future keys
-sudo cat /proc/keys  # View your installed keys
-dmesg -wH  # Kernel log like tail -f
+# keys
+sudo mokutil --list-new  # list key that will be added at boot
+sudo mokutil --reset  # delete future keys
+sudo cat /proc/keys  # view your installed keys
+dmesg -wH  # kernel log like tail -f
+
+# cheats
+sudo modprobe -r tarot && \
+sudo make full && \
+watch -n 1 sudo head -c 4 /dev/tarot # update and run
 ```
 
-### Source
+### source
 
-*  Device Driver: https://www.apriorit.com/dev-blog/195-simple-driver-for-linux-os
-*  Signing driver: https://gist.github.com/Garoe/74a0040f50ae7987885a0bebe5eda1aa
-*  Mok: https://ubuntu.com/blog/how-to-sign-things-for-secure-boot
+*  based on https://github.com/tinmarino/dev_one
+*  device driver: https://www.apriorit.com/dev-blog/195-simple-driver-for-linux-os
+*  signing driver: https://gist.github.com/Garoe/74a0040f50ae7987885a0bebe5eda1aa
+*  MOK: https://ubuntu.com/blog/how-to-sign-things-for-secure-boot
 
 
-### Licence
+### licence
 
-This project, DevOne, is licensed under the [GPL v2.0 or later](https://spdx.org/licenses/GPL-2.0-or-later.html)
-Copyright &copy; 2020-2022 Martin Tourneboeuf (https://tinmarino.github.io)
+this project, dev_tarot, is licensed under the [GPL v2.0 or later](https://spdx.org/licenses/GPL-2.0-or-later.html)
+copyright &copy; 2025 scot reichman (https://github.com/i2097i)
