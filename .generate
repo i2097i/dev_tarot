@@ -1,5 +1,9 @@
 #! /bin/bash
 
+if [[ -z "$OUT" ]]; then
+  OUT=$(dirname "${BASH_SOURCE[0]}")
+fi
+
 # /dev/tarot output regex
 TEST_REGEX="[+-](T(2[0-1]|1[0-9]|[0-9])|[CSPW](1[0-4]|[1-9])){1}"
 
@@ -7,10 +11,10 @@ TEST_REGEX="[+-](T(2[0-1]|1[0-9]|[0-9])|[CSPW](1[0-4]|[1-9])){1}"
 TAROT="$(sudo head -c 4 /dev/tarot | tr -d '\0')";
 
 # write to .tarot
-echo $TAROT > .tarot
+echo $TAROT > "$OUT/.tarot"
 
 # read from .tarot
-cat .tarot
+cat $OUT/.tarot
 
 # test regex and exit
 if [[ "$TAROT" =~ $TEST_REGEX ]]; then
