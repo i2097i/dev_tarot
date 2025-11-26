@@ -1,0 +1,1 @@
+ACTION=="add", KERNEL=="tarot", SUBSYSTEM=="tarot_cls", MODE="0777"

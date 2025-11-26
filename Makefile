@@ -26,7 +26,6 @@ all: build
 
 
 full: \
-	check \
 	build \
 	sign \
 	install \
@@ -40,20 +39,22 @@ clean: \
 
 key:
 	@$(call title, "creating keys")
-	openssl req -new -x509 -newkey rsa:2048 -days 36500 -keyout MOK.priv -outform DER -out MOK.der -nodes -subj "/CN=TinmarinoUnsafe/"
-	#
-	# TODO: backup if there is one key
-	cp MOK.der $(BUILDSYSTEM_DIR)/certs/signing_key.x509
-	cp MOK.priv $(BUILDSYSTEM_DIR)/certs/signing_key.pem
-	#
+	@if [ ! -f "$(BUILDSYSTEM_DIR)/certs/signing_key.x509" ] || [ ! -f "$(BUILDSYSTEM_DIR)/certs/signing_key.pem" ]; then \
+		openssl req -new -x509 -newkey rsa:2048 -days 36500 -keyout MOK_TAROT.priv -outform DER -out MOK_TAROT.der -nodes -subj "/CN=i2097i-unsafe/"; \
+		cp MOK_TAROT.der $(BUILDSYSTEM_DIR)/certs/signing_key.x509; \
+		cp MOK_TAROT.priv $(BUILDSYSTEM_DIR)/certs/signing_key.pem; \
+	else \
+		cp $(BUILDSYSTEM_DIR)/certs/signing_key.x509 MOK_TAROT.der; \
+		cp $(BUILDSYSTEM_DIR)/certs/signing_key.pem MOK_TAROT.priv; \
+	fi
 	@echo "\e[31;1mplease enter a password you will be asked for on reboot:\e[0m"
-	mokutil --import MOK.der
+	mokutil --import MOK_TAROT.der
 	@echo "\e[31;1mnow you must: 1/ reboot, 2/ select 'Unroll MOK', 3/ enter password you previously gave\e[0m"
 	@echo
 
 check:
 	@$(call title, "checking")
-	@if [ ! -f MOK.der ] || [ ! -f MOK.priv ]; then \
+	@if [ ! -f MOK_TAROT.der ] || [ ! -f MOK_TAROT.priv ]; then \
 		echo -n '\e[31m'; \
 		echo 'error: you must create keys before'; \
 		echo 'tip: run: make key'; \
@@ -77,7 +78,7 @@ unbuild:
 sign:
 	@$(call title, "signing with the generated self-signed keys")
 	cp $(TARGET_MODULE).ko $(TARGET_MODULE).ko.bck
-	/usr/src/linux-headers-$(shell uname -r)/scripts/sign-file sha256 MOK.priv MOK.der $(TARGET_MODULE).ko
+	/usr/src/linux/scripts/sign-file sha256 MOK_TAROT.priv MOK_TAROT.der $(TARGET_MODULE).ko
 	@echo
 
 install:
