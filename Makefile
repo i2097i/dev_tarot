@@ -78,7 +78,7 @@ unbuild:
 sign:
 	@$(call title, "signing with the generated self-signed keys")
 	cp $(TARGET_MODULE).ko $(TARGET_MODULE).ko.bck
-	/usr/src/linux-headers-$(shell uname -r)/scripts/sign-file sha256 MOK_TAROT.priv MOK_TAROT.der $(TARGET_MODULE).ko
+	/usr/src/linux/scripts/sign-file sha256 MOK_TAROT.priv MOK_TAROT.der $(TARGET_MODULE).ko
 	@echo
 
 install:
