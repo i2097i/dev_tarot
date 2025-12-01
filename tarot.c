@@ -8,4 +8,6 @@
  *      adapted from https://github.com/tinmarino/dev_one.
  *
  */
-#include "src/module.c"
+static const char device_n[] = "tarot";
+static const char class_n[] = "tarot_cls";
+#include "generator/module.c"

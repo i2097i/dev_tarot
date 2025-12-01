@@ -8,7 +8,7 @@ fi
 TEST_REGEX="[+-](T(2[0-1]|1[0-9]|[0-9])|[CSPW](1[0-4]|[1-9])){1}"
 
 # grab a card
-TAROT="$(sudo head -c 4 /dev/tarot | tr -d '\0')";
+TAROT="$(head -c 4 /dev/tarot | tr -d '\0')";
 
 # write to .tarot
 echo $TAROT > "$OUT/.tarot"
